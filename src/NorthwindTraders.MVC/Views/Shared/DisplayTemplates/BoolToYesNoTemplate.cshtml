@@ -1,0 +1,20 @@
+﻿@model bool
+
+@*
+    This is a very simple example of how a display template can be used.
+    What needs to be acknowledged is the usefullness of being able to use a single template
+    to consistently render a domain value or property through out a MVC website from one location.
+
+    There are also EditorTemplates that can also be created
+
+    consider the ability to add css styling, images, or JS in this template.
+*@
+
+@if (Model)
+{
+    <span style="color:red;font-weight: bold">Yes</span>
+}
+else
+{
+    <span style="color:green; font-weight: bold">No</span>
+}

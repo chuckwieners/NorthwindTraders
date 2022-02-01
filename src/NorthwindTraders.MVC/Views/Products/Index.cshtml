@@ -1,0 +1,102 @@
+﻿@using NorthwindTraders.Domain.Search.Criteria
+@using NorthwindTraders.MVC.Enums
+@using PagedList.Mvc
+@*Keep the model as an IEnumerable but, cast it to a PagedList only when needed*@
+@model IEnumerable<NorthwindTraders.Domain.Search.Criteria.Results.ProductResult>
+
+@{
+    ViewBag.Title = "Products";
+    var criteria = ViewBag.SearchCriteria as ProductSearchCriteria;
+}
+
+@section head{
+    @*this style can/should be moved into the .css file if used in other views*@
+    <style>
+        div.pagination-container {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+}
+
+<h2>Products</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Add")
+</p>
+
+<div class="row">
+    @{Html.RenderPartial("_ProductsSearch", criteria);}
+</div>
+<div class="row">
+    @if (Model.Any())
+    {
+        <table class="table">
+            <tr>
+                <th>
+                    @*could pass the page number in this URL as well --defaulting to first page if null/empty*@
+                    @Html.ActionLink("Name", "Index", "Products", new { sortOrder = ProductSortOrderEnum.Name.ToString() }, null)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.QuantityPerUnit)
+                </th>
+                <th>
+                    @*could pass the page number in this URL as well --defaulting to first page if null/empty*@
+                    @Html.ActionLink("Unit Price", "Index", "Products", new { sortOrder = ProductSortOrderEnum.UnitPrice.ToString() }, null)
+                </th>
+                <th>
+                    @*could pass the page number in this URL as well --defaulting to first page if null/empty*@
+                    @Html.ActionLink("Units in Stock", "Index", "Products", new { sortOrder = ProductSortOrderEnum.UnitsInStock.ToString() }, null)
+                </th>
+                <th></th>
+            </tr>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.QuantityPerUnit)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UnitPrice)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UnitsInStock)
+                    </td>
+                    <td>
+                        @*@Html.ActionLink("Edit", "Edit", new { id=item.ProductId }) |*@
+                        @Html.ActionLink("Details", "Details", new { id = item.ProductId })
+                        @*@Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+    else
+    {
+        <p>
+            No matches found
+        </p>
+    }
+</div>
+
+<div class="row">
+    @*The Model is defined as an IEnumberable but is casted to a PagedList below only when it is needed*@
+    @*only show the pager if there is more than one page*@
+    @if (((PagedList.IPagedList)Model).PageCount > 1)
+    {
+        @*<p>Page @Model.PageNumber of @Model.PageCount</p>*@
+        @Html.PagedListPager(((PagedList.IPagedList)Model), page => Url.Action("Index", new
+        {
+            SearchText = criteria.SearchText,
+            Discontinued = criteria.Discontinued,
+            CategoryId = criteria.CategoryId,
+            SupplierId = criteria.SupplierId,
+            SortOrder = ViewBag.SortOrder,
+            page,
+        }))
+    }
+</div>
+<div class="clearfix"></div>

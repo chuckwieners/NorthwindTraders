@@ -1,0 +1,77 @@
+﻿@model IEnumerable<NorthwindTraders.Domain.Entities.Supplier>
+
+@{
+    ViewBag.Title = "Suppliers";
+}
+
+<h2>Suppliers</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Add")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ContactName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ContactTitle)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Phone)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Fax)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HomePage)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ContactName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ContactTitle)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Phone)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Fax)
+        </td>
+        <td>
+            @*@Html.DisplayFor(modelItem => item.HomePage)*@
+            
+            @*quick and dirty way to render a hyperlink from URL*@
+            @if (!string.IsNullOrEmpty(item.HomePage))
+            {
+                @*we could also verify that the URL is valid but, that should be done 
+                    during the saving of the URL. It is typical that data is dirty in 
+                    existing DB's and a discussion with stakeholder about how best to
+                    fix/clean the data.
+                    
+                    Many of the URls within Northwind are invalid and won't work
+                    correctly. Valid URLs would at least begin with http://*@
+                <a href="@item.HomePage">Website</a>
+            }
+            @*that could be another place where a custom Helper method could be created
+                to extend either the HTMLHelper or UrlHelper classes*@
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id = item.Id })
+            @*@Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
+        </td>
+    </tr>
+}
+</table>
